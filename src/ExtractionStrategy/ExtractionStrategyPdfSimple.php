@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Xatham\TextExtraction\ExtractionStrategy;
 
-use App\BusinessLogic\Config\DocumentUploadConfig;
-use App\BusinessLogic\Document\Parser\Model\ParsableModelInterface;
-use App\BusinessLogic\Document\Parser\ParsingContext;
 use Smalot\PdfParser\Parser;
+use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 use Xatham\TextExtraction\Dto\Document;
 use Xatham\TextExtraction\Dto\TextSource;
 
@@ -20,16 +18,12 @@ class ExtractionStrategyPdfSimple implements ExtractionStrategyInterface
      */
     private $pdfParser;
 
-    /** @var DocumentUploadConfig */
-    private $documentUploadConfig;
-
-    public function __construct(Parser $pdfParser, DocumentUploadConfig $documentUploadConfig)
+    public function __construct(Parser $pdfParser)
     {
         $this->pdfParser = $pdfParser;
-        $this->documentUploadConfig = $documentUploadConfig;
     }
 
-    public function extractSource(TextSource $textSource): Document
+    public function extractSource(TextSource $textSource): ?Document
     {
         $content = $parsingContext->getDocumentPath();
         $plainText = file_get_contents($content);
@@ -45,6 +39,6 @@ class ExtractionStrategyPdfSimple implements ExtractionStrategyInterface
 
     public function canHandle(string $mimeType, TextExtractionConfiguration $configuration): bool
     {
-        return $mimeType->getMimeType() === self::MIME_TYPE_PDF && $this->documentUploadConfig->isWithOCR() === false;
+        return $mimeType === self::MIME_TYPE_PDF && $configuration->isWithOCRSupport() !== true;
     }
 }

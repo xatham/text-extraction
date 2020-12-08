@@ -14,7 +14,7 @@ use Xatham\TextExtraction\Extractor\TextExtractor;
 use PHPUnit\Framework\TestCase;
 use Xatham\TextExtraction\Resolver\MimeTypeResolver;
 
-class TextExtractorTest extends TestCase
+final class TextExtractorTest extends TestCase
 {
     use ProphecyTrait;
 

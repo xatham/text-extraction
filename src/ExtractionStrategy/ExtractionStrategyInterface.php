@@ -10,7 +10,7 @@ use Xatham\TextExtraction\Dto\TextSource;
 
 interface ExtractionStrategyInterface
 {
-    public function extractSource(TextSource $textSource): Document;
+    public function extractSource(TextSource $textSource): ?Document;
 
     public function canHandle(string $mimeType, TextExtractionConfiguration $configuration): bool;
 }

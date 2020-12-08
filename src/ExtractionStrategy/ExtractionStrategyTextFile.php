@@ -13,7 +13,7 @@ class ExtractionStrategyTextFile implements ExtractionStrategyInterface
 {
     private const MIME_TYPE_PDF = 'text/plain';
 
-    public function extractSource(TextSource $textSource): Document
+    public function extractSource(TextSource $textSource): ?Document
     {
         $document = new Document();
         $text = file_get_contents($textSource->getPath()());

@@ -3,9 +3,12 @@
 declare(strict_types=1);
 
 namespace Xatham\TextExtraction\ExtractionStrategy;
+
+use InvalidArgumentException;
 use PhpOffice\PhpWord\Element\Text;
 use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\Reader\ODText;
+use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 use Xatham\TextExtraction\Dto\Document;
 use Xatham\TextExtraction\Dto\TextSource;
 
@@ -21,15 +24,15 @@ class ExtractionStrategyOpenOfficeDoc implements ExtractionStrategyInterface
         $this->docParser = $wordDocParser;
     }
 
-    public function extractSource(TextSource $textSource): Document
+    public function extractSource(TextSource $textSource): ?Document
     {
         if (!$this->docParser->canRead($textSource->getPath())) {
-            throw new \InvalidArgumentException('Could not read');
+            throw new InvalidArgumentException('Could not read');
         }
 
         $docParser = $this->docParser->load($textSource->getPath());
         $sections = $docParser->getSections();
-        $document =  new Document($textSource->getMimeType());
+        $document =  new Document();
 
         if (empty($sections)) {
             return $document;

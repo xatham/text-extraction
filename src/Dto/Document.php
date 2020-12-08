@@ -7,12 +7,12 @@ namespace Xatham\TextExtraction\Dto;
 class Document
 {
     /**
-     * @var TextItem[]
+     * @var string[]
      */
     private array $textItems = [];
 
     /**
-     * @return TextItem[]
+     * @return string[]
      */
     public function getTextItems(): array
     {
@@ -20,20 +20,12 @@ class Document
     }
 
     /**
-     * @param TextItem[] $textItems
+     * @param string[] $textItems
      */
     public function setTextItems(array $textItems): Document
     {
         $this->textItems = $textItems;
 
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMimeType(): string
-    {
-        return $this->mimeType;
     }
 }

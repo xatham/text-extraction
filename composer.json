@@ -7,8 +7,12 @@
         }
     ],
     "require": {
+        "ext-imagick": "*",
         "shuchkin/simplexlsx": "^0.8.19",
-        "phpoffice/phpword": "^0.17.0"
+        "phpoffice/phpword": "^0.17.0",
+        "smalot/pdfparser": "^0.17.1",
+        "thiagoalessio/tesseract_ocr": "^2.9",
+        "symfony/finder": "^5.2"
     },
     "autoload": {
         "psr-4": {

@@ -31,7 +31,7 @@ class ExtractionStrategyWordDoc implements ExtractionStrategyInterface
 
         $docParser = $this->wordDocParser->load($textSource->getPath());
         $sections = $docParser->getSections();
-
+        
         if (empty($sections)) {
             return $parsableModel;
         }
