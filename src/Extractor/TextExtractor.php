@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Xatham\TextExtraction\Extractor;
 
+use League\Flysystem\Filesystem;
 use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 use Xatham\TextExtraction\Dto\Document;
 use Xatham\TextExtraction\Dto\TextSource;
@@ -12,6 +13,8 @@ use Xatham\TextExtraction\Resolver\MimeTypeResolver;
 
 class TextExtractor implements TextExtractorInterface
 {
+    private Filesystem $fileSystem;
+
     private TextExtractionConfiguration $textExtractionConfiguration;
 
     /**
@@ -19,25 +22,31 @@ class TextExtractor implements TextExtractorInterface
      */
     private array $extractionStrategies;
 
-    private MimeTypeResolver $mimeTypeResolver;
-
-    public function __construct(TextExtractionConfiguration $textExtractionConfiguration, $extractionStrategies, MimeTypeResolver $mimeTypeResolver)
-    {
+    public function __construct(
+        Filesystem $filesystem,
+        TextExtractionConfiguration $textExtractionConfiguration,
+        array $extractionStrategies,
+        MimeTypeResolver $mimeTypeResolver
+    ) {
+        $this->fileSystem = $filesystem;
         $this->textExtractionConfiguration = $textExtractionConfiguration;
         $this->extractionStrategies = $extractionStrategies;
         $this->mimeTypeResolver = $mimeTypeResolver;
     }
 
+    private MimeTypeResolver $mimeTypeResolver;
+
     public function extractByFilePath(string $filePath): ?Document
     {
+        $mimeType = $filePath = $this->fileSystem->mimeType($filePath);
         $source = new TextSource($filePath);
-        $mimeType = $this->mimeTypeResolver->getMimeTypeForTextSource($source);
+        # $mimeType = $this->mimeTypeResolver->getMimeTypeForTextSource($source);
 
         foreach ($this->extractionStrategies as $strategy) {
             if ($strategy->canHandle($mimeType, $this->textExtractionConfiguration) === false) {
                 continue;
             }
-            return $strategy->extractSource($source);
+            return $strategy->extractSource($source,);
         }
 
         return null;
@@ -52,7 +61,7 @@ class TextExtractor implements TextExtractorInterface
             if ($strategy->canHandle($mimeType, $this->textExtractionConfiguration) === false) {
                 continue;
             }
-            return $strategy->extractSource($source);
+            return $strategy->extractSource($source,);
         }
         return null;
     }

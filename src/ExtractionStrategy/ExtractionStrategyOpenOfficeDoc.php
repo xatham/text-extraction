@@ -24,13 +24,13 @@ class ExtractionStrategyOpenOfficeDoc implements ExtractionStrategyInterface
         $this->docParser = $wordDocParser;
     }
 
-    public function extractSource(TextSource $textSource): ?Document
+    public function extractSource(SplFileObject $fileObject, TextExtractionConfiguration $textExtractionConfiguration): ?Document
     {
-        if (!$this->docParser->canRead($textSource->getPath())) {
+        if (!$this->docParser->canRead($fileObject->getPath())) {
             throw new InvalidArgumentException('Could not read');
         }
 
-        $docParser = $this->docParser->load($textSource->getPath());
+        $docParser = $this->docParser->load($fileObject->getPath());
         $sections = $docParser->getSections();
         $document =  new Document();
 

@@ -4,25 +4,25 @@ declare(strict_types=1);
 
 namespace Xatham\TextExtraction\ExtractionStrategy;
 
+use SplFileInfo;
+use SplFileObject;
 use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 use Xatham\TextExtraction\Dto\Document;
-use Xatham\TextExtraction\Dto\TextSource;
 
 class ExtractionStrategyCsv implements ExtractionStrategyInterface
 {
     private const MIME_TYPE = 'text/csv';
 
-    public function extractSource(TextSource $textSource): ?Document
+    public function extractSource(SplFileObject $fileObject, TextExtractionConfiguration $textExtractionConfiguration): ?Document
     {
         $document = new Document();
-        $fileHandle = fopen($textSource->getPath(), "rb");
-        $texts = [];
-        while (($rows = fgetcsv($fileHandle)) !== false) {
-            foreach ($rows as $row) {
-                $texts[] = $row;
-            }
+        $text = '';
+        $fileObject->rewind();
+
+        while (($row = $fileObject->fgetcsv()) !== false) {
+            $text .= trim(implode(' ', $row));
         }
-        $document->setTextItems($texts);
+        $document->setTextItems([$text]);
 
         return $document;
     }

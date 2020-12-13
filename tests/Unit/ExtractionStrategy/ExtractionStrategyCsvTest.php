@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Xatham\TextExtraction\Tests\Unit\ExtractionStrategy;
 
+use Prophecy\Argument\ArgumentsWildcard;
 use Prophecy\PhpUnit\ProphecyTrait;
+use SplFileObject;
 use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 use PHPUnit\Framework\TestCase;
-use Xatham\TextExtraction\Extractor\TextExtractor;
-use Xatham\TextExtraction\Resolver\MimeTypeResolver;
+use Xatham\TextExtraction\Dto\Document;
+use Xatham\TextExtraction\ExtractionStrategy\ExtractionStrategyCsv;
 
 final class ExtractionStrategyCsvTest extends TestCase
 {
@@ -19,8 +21,33 @@ final class ExtractionStrategyCsvTest extends TestCase
      */
     public function it_should_parse_a_string_and_return_null(): void
     {
-        $config = new TextExtractionConfiguration(true, ['text/csv']);
-        $textExtractor = new TextExtractor($config, [], new MimeTypeResolver());
-        self::assertEquals(null, $textExtractor->extractByString('test'));
+        $config = new TextExtractionConfiguration(
+            '/tmp',
+            true,
+            ['text/csv'],
+        );
+        $targetFileObject = $this->prophesize(SplFileObject::class);
+        $textData = [
+            ["This", "is" , "a", "text"],
+            ["A", "second" , "test", "."],
+        ];
+
+        $targetFileObject->rewind()->shouldBeCalledOnce();
+        $targetFileObject->fgetcsv()->will(function($args, $mock) use ($textData) {
+            $methodCalls = $mock->findProphecyMethodCalls(
+                'fgetcsv',
+                new ArgumentsWildcard($args)
+            );
+            return count($methodCalls) < 2 ? $textData[count($methodCalls)] : false;
+        });
+
+        $textExtractor = new ExtractionStrategyCsv();
+        $expectedDocument = new Document();
+        $expectedDocument->setTextItems(
+            [
+                "This is a textA second test.",
+            ]
+        );
+        self::assertEquals($expectedDocument, $textExtractor->extractSource($targetFileObject->reveal(), $config));
     }
 }

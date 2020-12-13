@@ -24,10 +24,10 @@ class ExtractionStrategyPdfWithOCR implements ExtractionStrategyInterface
         $this->convertPdfToImageFileConverter = $convertPdfToImageFileConverter;
     }
 
-    public function extractSource(TextSource $textSource): ?Document
+    public function extractSource(SplFileObject $fileObject, TextExtractionConfiguration $textExtractionConfiguration): ?Document
     {
         $imageFilePathArray = $this->convertPdfToImageFileConverter->convertToImageFiles(
-            $textSource->getPath(),
+            $fileObject->getPath(),
             'jpg'
         );
 

@@ -23,7 +23,7 @@ class ExtractionStrategyPdfSimple implements ExtractionStrategyInterface
         $this->pdfParser = $pdfParser;
     }
 
-    public function extractSource(TextSource $textSource): ?Document
+    public function extractSource(SplFileObject $fileObject, TextExtractionConfiguration $textExtractionConfiguration): ?Document
     {
         $content = $parsingContext->getDocumentPath();
         $plainText = file_get_contents($content);
@@ -39,6 +39,8 @@ class ExtractionStrategyPdfSimple implements ExtractionStrategyInterface
 
     public function canHandle(string $mimeType, TextExtractionConfiguration $configuration): bool
     {
-        return $mimeType === self::MIME_TYPE_PDF && $configuration->isWithOCRSupport() !== true;
+        return
+            $mimeType === self::MIME_TYPE_PDF &&
+            $configuration->isWithOCRSupport() !== true && $textSource->getPath() !== null;
     }
 }

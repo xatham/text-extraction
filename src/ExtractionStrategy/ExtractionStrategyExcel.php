@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Xatham\TextExtraction\ExtractionStrategy;
 
 use SimpleXLSX;
+use SplFileObject;
+use Xatham\TextExtraction\Adapter\SimpleXLSCAdapter;
 use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 use Xatham\TextExtraction\Dto\Document;
 use Xatham\TextExtraction\Dto\TextSource;
@@ -13,10 +15,20 @@ class ExtractionStrategyExcel implements ExtractionStrategyInterface
 {
     private const MIME_TYPE_EXCEL = 'application/vnd.ms-excel';
 
-    public function extractSource(TextSource $textSource): ?Document
+    private SimpleXLSCAdapter $simpleXLSX;
+
+    public function __construct(SimpleXLSCAdapter $simpleXLSX)
+    {
+        $this->simpleXLSX = $simpleXLSX;
+    }
+
+    public function extractSource(SplFileObject $fileObject, TextExtractionConfiguration $textExtractionConfiguration): ?Document
     {
         $document = new Document();
-        $rows = SimpleXLSX::parse($textSource->getPath());
+        $rows = $this->simpleXLSX->parse($fileObject->getPath());
+        if (!$rows) {
+            throw new \ErrorException('Could not parse Excel file');
+        }
         $document->setTextItems([$rows]);
 
         return $document;
