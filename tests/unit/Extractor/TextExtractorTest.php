@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Xatham\TextExtraction\Tests\Unit\Extractor;
+namespace Xatham\TextExtraction\Tests\unit\Extractor;
 
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
@@ -23,7 +23,11 @@ final class TextExtractorTest extends TestCase
      */
     public function it_should_parse_a_string_and_return_null(): void
     {
-        $config = new TextExtractionConfiguration(true, ['text/csv']);
+        $config = new TextExtractionConfiguration(
+            true,
+            true,
+            ['text/csv']
+        );
         $textExtractor = new TextExtractor($config, [], new MimeTypeResolver());
         self::assertEquals(null, $textExtractor->extractByString('test'));
     }

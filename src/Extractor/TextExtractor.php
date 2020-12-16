@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Xatham\TextExtraction\Extractor;
 
 use League\Flysystem\Filesystem;
+use RuntimeException;
 use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 use Xatham\TextExtraction\Dto\Document;
 use Xatham\TextExtraction\Dto\TextSource;
@@ -38,9 +39,14 @@ class TextExtractor implements TextExtractorInterface
 
     public function extractByFilePath(string $filePath): ?Document
     {
+        if (
+            $this->textExtractionConfiguration->isWithOCRSupport() === true &&
+            extension_loaded('imagick') === false
+        ) {
+            throw new RuntimeException('Imagick PHP-Extension is required to use OCR');
+        }
         $mimeType = $filePath = $this->fileSystem->mimeType($filePath);
         $source = new TextSource($filePath);
-        # $mimeType = $this->mimeTypeResolver->getMimeTypeForTextSource($source);
 
         foreach ($this->extractionStrategies as $strategy) {
             if ($strategy->canHandle($mimeType, $this->textExtractionConfiguration) === false) {

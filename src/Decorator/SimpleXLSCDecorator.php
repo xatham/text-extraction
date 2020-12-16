@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Xatham\TextExtraction\Adapter;
+namespace Xatham\TextExtraction\Decorator;
 
 use SimpleXLSX;
 
-class SimpleXLSCAdapter
+class SimpleXLSCDecorator
 {
     private SimpleXLSX $simpleXlsx;
 

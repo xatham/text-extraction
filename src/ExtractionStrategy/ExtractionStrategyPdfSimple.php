@@ -5,18 +5,15 @@ declare(strict_types=1);
 namespace Xatham\TextExtraction\ExtractionStrategy;
 
 use Smalot\PdfParser\Parser;
+use SplFileObject;
 use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 use Xatham\TextExtraction\Dto\Document;
-use Xatham\TextExtraction\Dto\TextSource;
 
 class ExtractionStrategyPdfSimple implements ExtractionStrategyInterface
 {
     private const MIME_TYPE_PDF = 'application/pdf';
 
-    /**
-     * @var Parser
-     */
-    private $pdfParser;
+    private Parser $pdfParser;
 
     public function __construct(Parser $pdfParser)
     {
@@ -25,22 +22,16 @@ class ExtractionStrategyPdfSimple implements ExtractionStrategyInterface
 
     public function extractSource(SplFileObject $fileObject, TextExtractionConfiguration $textExtractionConfiguration): ?Document
     {
-        $content = $parsingContext->getDocumentPath();
-        $plainText = file_get_contents($content);
-        $parsedDocument = $this->pdfParser->parseContent($plainText);
-        $parsableModel->setPlainTexts(
-            [
-                $parsedDocument->getText()
-            ]
-        );
+        $content = $fileObject->fpassthru();
+        $parsedDocument = $this->pdfParser->parseContent($content);
 
-        return $parsableModel;
+        return (new Document())->setTextItems([$parsedDocument->getText()]);
     }
 
     public function canHandle(string $mimeType, TextExtractionConfiguration $configuration): bool
     {
         return
             $mimeType === self::MIME_TYPE_PDF &&
-            $configuration->isWithOCRSupport() !== true && $textSource->getPath() !== null;
+            $configuration->isWithOCRSupport() !== true;
     }
 }

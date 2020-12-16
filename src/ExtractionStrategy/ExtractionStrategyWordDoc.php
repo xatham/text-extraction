@@ -3,37 +3,36 @@
 declare(strict_types=1);
 
 namespace Xatham\TextExtraction\ExtractionStrategy;
-use App\BusinessLogic\Document\Parser\ParsingContext;
-use App\BusinessLogic\Document\Parser\Strategy\ExtractionStrategyInterface;
+use InvalidArgumentException;
 use PhpOffice\PhpWord\Element\Text;
-use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\Reader\MsDoc;
+use SplFileObject;
+use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 use Xatham\TextExtraction\Dto\Document;
-use Xatham\TextExtraction\Dto\TextSource;
 
 class ExtractionStrategyWordDoc implements ExtractionStrategyInterface
 {
     private const MIME_TYPE_PDF = 'application/msword';
 
     /** @var MsDoc */
-    private $wordDocParser;
+    private $msDocParser;
 
-    public function __construct(PhpWord $wordDocParser)
+    public function __construct(MsDoc $msDocParser)
     {
-        $this->wordDocParser = $wordDocParser;
+        $this->msDocParser = $msDocParser;
     }
 
-    public function extractDocument(TextSource $textSource): Document
+    public function extractSource(SplFileObject $fileObject, TextExtractionConfiguration $textExtractionConfiguration): ?Document
     {
-        if (!$this->wordDocParser->canRead($textSource->getPath())) {
-            throw new \InvalidArgumentException('Could not read');
+        $path = $fileObject->getPath();
+        if (!$this->msDocParser->canRead($path)) {
+            throw new InvalidArgumentException('Could not read ' . $path);
         }
-
-        $docParser = $this->wordDocParser->load($textSource->getPath());
+        $docParser = $this->msDocParser->load($path);
         $sections = $docParser->getSections();
         
         if (empty($sections)) {
-            return $parsableModel;
+            return null;
         }
 
         $textString = '';
@@ -45,13 +44,12 @@ class ExtractionStrategyWordDoc implements ExtractionStrategyInterface
                 }
             }
         }
-        $parsableModel->setPlainTexts([$textString]);
 
-        return $parsableModel;
+        return (new Document())->setTextItems([trim($textString)]);
     }
 
-    public function canHandle(ParsingContext $context): bool
+    public function canHandle(string $mimeType, TextExtractionConfiguration $configuration): bool
     {
-        return $context->getMimeType() === self::MIME_TYPE_PDF;
+        return $mimeType === self::MIME_TYPE_PDF;
     }
 }

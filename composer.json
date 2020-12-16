@@ -3,7 +3,7 @@
     "authors": [
         {
             "name": "xatham",
-            "email": "phreaker23@gmx.de"
+            "email": "s.kirejewski@googlemail.com"
         }
     ],
     "require": {
@@ -28,6 +28,11 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
-        "phpspec/prophecy-phpunit": "^2.0"
+        "phpspec/prophecy-phpunit": "^2.0",
+        "phpstan/phpstan": "^0.12.62"
+    },
+    "scripts": {
+        "phpstan": "vendor/bin/phpstan analyse src -l 8",
+        "phpunit": "vendor/bin/phpunit --testsuite unit"
     }
 }

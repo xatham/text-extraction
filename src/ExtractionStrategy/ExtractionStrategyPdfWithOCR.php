@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Xatham\TextExtraction\ExtractionStrategy;
 
+use SplFileObject;
 use thiagoalessio\TesseractOCR\TesseractOCR;
 use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 use Xatham\TextExtraction\Converter\ConvertPdfToImageFileConverter;
 use Xatham\TextExtraction\Dto\Document;
-use Xatham\TextExtraction\Dto\TextSource;
 
 class ExtractionStrategyPdfWithOCR implements ExtractionStrategyInterface
 {
@@ -26,11 +26,10 @@ class ExtractionStrategyPdfWithOCR implements ExtractionStrategyInterface
 
     public function extractSource(SplFileObject $fileObject, TextExtractionConfiguration $textExtractionConfiguration): ?Document
     {
-        $imageFilePathArray = $this->convertPdfToImageFileConverter->convertToImageFiles(
-            $fileObject->getPath(),
+        $imageFilePathArray = $this->convertPdfToImageFileConverter->convertPathTargetToImageFiles(
+            $fileObject,
             'jpg'
         );
-
         $parsedContentArray = [];
 
         foreach ($imageFilePathArray as $imageFilePath) {

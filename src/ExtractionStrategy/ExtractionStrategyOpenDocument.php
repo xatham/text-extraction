@@ -6,38 +6,37 @@ namespace Xatham\TextExtraction\ExtractionStrategy;
 
 use InvalidArgumentException;
 use PhpOffice\PhpWord\Element\Text;
-use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\Reader\ODText;
+use SplFileObject;
 use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 use Xatham\TextExtraction\Dto\Document;
-use Xatham\TextExtraction\Dto\TextSource;
 
-class ExtractionStrategyOpenOfficeDoc implements ExtractionStrategyInterface
+class ExtractionStrategyOpenDocument implements ExtractionStrategyInterface
 {
     private const MIME_TYPE = 'application/vnd.oasis.opendocument.text';
 
     /** @var ODText */
     private $docParser;
 
-    public function __construct(PhpWord $wordDocParser)
+    public function __construct(ODText $openDocParser)
     {
-        $this->docParser = $wordDocParser;
+        $this->docParser = $openDocParser;
     }
 
     public function extractSource(SplFileObject $fileObject, TextExtractionConfiguration $textExtractionConfiguration): ?Document
     {
-        if (!$this->docParser->canRead($fileObject->getPath())) {
-            throw new InvalidArgumentException('Could not read');
+        $filePath = $fileObject->getPath();
+        if (!$this->docParser->canRead($filePath)) {
+            throw new InvalidArgumentException('Could not read ' . $filePath);
         }
 
-        $docParser = $this->docParser->load($fileObject->getPath());
+        $docParser = $this->docParser->load($filePath);
         $sections = $docParser->getSections();
         $document =  new Document();
 
-        if (empty($sections)) {
+        if (count($sections) === 0) {
             return $document;
         }
-
         $textString = '';
         foreach ($sections as $section) {
             $elements = $section->getElements();
@@ -47,7 +46,7 @@ class ExtractionStrategyOpenOfficeDoc implements ExtractionStrategyInterface
                 }
             }
         }
-        $document->setTextItems([$textString]);
+        $document->setTextItems([trim($textString)]);
 
         return $document;
     }

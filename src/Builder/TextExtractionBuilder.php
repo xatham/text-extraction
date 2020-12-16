@@ -9,7 +9,7 @@ use League\Flysystem\Local\LocalFilesystemAdapter;
 use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 use Xatham\TextExtraction\ExtractionStrategy\ExtractionStrategyCsv;
 use Xatham\TextExtraction\ExtractionStrategy\ExtractionStrategyExcel;
-use Xatham\TextExtraction\ExtractionStrategy\ExtractionStrategyOpenOfficeDoc;
+use Xatham\TextExtraction\ExtractionStrategy\ExtractionStrategyOpenDocument;
 use Xatham\TextExtraction\ExtractionStrategy\ExtractionStrategyPdfSimple;
 use Xatham\TextExtraction\ExtractionStrategy\ExtractionStrategyPdfWithOCR;
 use Xatham\TextExtraction\ExtractionStrategy\ExtractionStrategyTextFile;
@@ -24,7 +24,7 @@ final class TextExtractionBuilder
         $strategies = [
             ExtractionStrategyCsv::class,
             ExtractionStrategyExcel::class,
-            ExtractionStrategyOpenOfficeDoc::class,
+            ExtractionStrategyOpenDocument::class,
             ExtractionStrategyPdfWithOCR::class,
             ExtractionStrategyPdfSimple::class,
             ExtractionStrategyTextFile::class,

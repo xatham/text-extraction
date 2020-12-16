@@ -2,19 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Xatham\TextExtraction\Tests\ExtractionStrategy;
+namespace Xatham\TextExtraction\Tests\unit\ExtractionStrategy;
 
-use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
-use SimpleXLSX;
 use SplFileObject;
-use Xatham\TextExtraction\Adapter\SimpleXLSCAdapter;
 use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 use Xatham\TextExtraction\Dto\Document;
-use Xatham\TextExtraction\ExtractionStrategy\ExtractionStrategyExcel;
+use Xatham\TextExtraction\ExtractionStrategy\ExtractionStrategyTextFile;
 use PHPUnit\Framework\TestCase;
 
-class ExtractionStrategyExcelTest extends TestCase
+final class ExtractionStrategyTextFileTest extends TestCase
 {
     use ProphecyTrait;
 
@@ -30,19 +27,16 @@ class ExtractionStrategyExcelTest extends TestCase
         );
 
         $targetFileObject = $this->prophesize(SplFileObject::class);
-        $targetFileObject->getPath()->willReturn('test')->shouldBeCalledOnce();
-
-        $excelAdapterMock = $this->prophesize(SimpleXLSCAdapter::class);
-        $excelAdapterMock->parse(Argument::any())->willReturn('Test string')->shouldBeCalledOnce();
+        $targetFileObject->fpassthru()->willReturn('Test string Another test string.')->shouldBeCalledOnce();
 
         $expectedDocument = new Document();
         $expectedDocument->setTextItems(
             [
-                "Test string",
+                "Test string Another test string.",
             ]
         );
 
-        $textExtractor = new ExtractionStrategyExcel($excelAdapterMock->reveal());
+        $textExtractor = new ExtractionStrategyTextFile();
         self::assertEquals($expectedDocument, $textExtractor->extractSource($targetFileObject->reveal(), $config));
     }
 }

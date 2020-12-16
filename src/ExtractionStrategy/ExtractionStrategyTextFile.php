@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Xatham\TextExtraction\ExtractionStrategy;
 
+use SplFileObject;
 use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 use Xatham\TextExtraction\Dto\Document;
-use Xatham\TextExtraction\Dto\TextItem;
-use Xatham\TextExtraction\Dto\TextSource;
 
 class ExtractionStrategyTextFile implements ExtractionStrategyInterface
 {
@@ -16,8 +15,8 @@ class ExtractionStrategyTextFile implements ExtractionStrategyInterface
     public function extractSource(SplFileObject $fileObject, TextExtractionConfiguration $textExtractionConfiguration): ?Document
     {
         $document = new Document();
-        $text = file_get_contents($fileObject->getPath()());
-        $document->setTextItems([new TextItem($text)]);
+        $text = $fileObject->fpassthru();
+        $document->setTextItems([$text]);
 
         return $document;
     }

@@ -4,38 +4,53 @@ declare(strict_types=1);
 
 namespace Xatham\TextExtraction\Converter;
 
+use DateTimeImmutable;
 use Imagick;
-use Symfony\Component\Finder\Finder;
+use ImagickException;
+use SplFileObject;
+use Xatham\TextExtraction\Factory\FileFinderFactory;
 
 class ConvertPdfToImageFileConverter implements ImageConverterInterface
 {
     private const MULTI_FILE_NAME_SUFFIX = '__gen';
 
-    public function convertToImageFiles(string $filePath, string $extensionType, ?string $alternatePath = null): array
+    private Imagick $imageDriver;
+
+    private FileFinderFactory $fileFinderFactory;
+
+    public function __construct(Imagick $imageDriver, FileFinderFactory $fileFinderFactory)
     {
-        $targetPath = $alternatePath ?? preg_replace('/\.pdf$/', '.' . $extensionType, $filePath);
-        $imagick    = new Imagick();
-        $imagick->setResolution(300, 300);
-        $imagick->readImage($filePath);
-        $imagick->resetIterator();
+        $this->imageDriver = $imageDriver;
+        $this->fileFinderFactory = $fileFinderFactory;
+    }
 
-        $fileObject = new \SplFileObject($filePath);
-        $baseNameWithoutExtension = $fileObject->getBasename('.pdf');
+    /**
+     * @return string[]
+     *
+     * @throws ImagickException
+     */
+    public function convertPathTargetToImageFiles(SplFileObject $splFileObject, string $extensionType, ?string $alternatePath = null): array
+    {
+        $path = $splFileObject->getPath();
+        $this->imageDriver->setResolution(300, 300);
+        $this->imageDriver->readImage($path);
+        $this->imageDriver->resetIterator();
 
-        $adjoin = $imagick->count() < 400;
-        $multiFileNameStamp = $baseNameWithoutExtension . $this->getGeneratedMultiFileStamp() . '.'. $extensionType->getValue();
-        $tempTargetPath     = $fileObject->getPath() . DIRECTORY_SEPARATOR . $multiFileNameStamp;
+        $baseNameWithoutExtension = $splFileObject->getBasename('.pdf');
+        # $adjoin = $this->imageDriver->count() < 400;
+        $multiFileNameStamp = $baseNameWithoutExtension . $this->getGeneratedMultiFileStamp() . '.'. $extensionType;
+        $tempTargetPath     = $path . DIRECTORY_SEPARATOR . $multiFileNameStamp;
 
-        $imagick->setImageFormat($extensionType->getValue());
-        $imagick->appendImages(false);
-        $imagick->writeImages($tempTargetPath, false);
-        $imagick->clear();
-        $imagick->destroy();
+        $this->imageDriver->setImageFormat($extensionType);
+        $this->imageDriver->appendImages(false);
+        $this->imageDriver->writeImages($tempTargetPath, false);
+        $this->imageDriver->clear();
+        $this->imageDriver->destroy();
 
-        $finder = new Finder();
+        $finder = $this->fileFinderFactory->createFinder();
         $finder
             ->files()
-            ->in($fileObject->getPath())
+            ->in($path)
             ->name('*' . $this->getGeneratedMultiFileStamp() . '*')
             ->sortByName(true);
 
@@ -49,6 +64,6 @@ class ConvertPdfToImageFileConverter implements ImageConverterInterface
 
     private function getGeneratedMultiFileStamp(): string
     {
-        return (new \DateTimeImmutable())->getTimestamp() . self::MULTI_FILE_NAME_SUFFIX;
+        return (new DateTimeImmutable())->getTimestamp() . self::MULTI_FILE_NAME_SUFFIX;
     }
 }

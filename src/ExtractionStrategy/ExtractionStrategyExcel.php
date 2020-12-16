@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Xatham\TextExtraction\ExtractionStrategy;
 
+use ErrorException;
 use SimpleXLSX;
 use SplFileObject;
-use Xatham\TextExtraction\Adapter\SimpleXLSCAdapter;
+use Xatham\TextExtraction\Decorator\SimpleXLSCDecorator;
 use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 use Xatham\TextExtraction\Dto\Document;
 use Xatham\TextExtraction\Dto\TextSource;
@@ -15,9 +16,9 @@ class ExtractionStrategyExcel implements ExtractionStrategyInterface
 {
     private const MIME_TYPE_EXCEL = 'application/vnd.ms-excel';
 
-    private SimpleXLSCAdapter $simpleXLSX;
+    private SimpleXLSCDecorator $simpleXLSX;
 
-    public function __construct(SimpleXLSCAdapter $simpleXLSX)
+    public function __construct(SimpleXLSCDecorator $simpleXLSX)
     {
         $this->simpleXLSX = $simpleXLSX;
     }
@@ -27,7 +28,7 @@ class ExtractionStrategyExcel implements ExtractionStrategyInterface
         $document = new Document();
         $rows = $this->simpleXLSX->parse($fileObject->getPath());
         if (!$rows) {
-            throw new \ErrorException('Could not parse Excel file');
+            throw new ErrorException('Could not parse Excel file');
         }
         $document->setTextItems([$rows]);
 

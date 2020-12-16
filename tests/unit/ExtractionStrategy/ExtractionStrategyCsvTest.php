@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Xatham\TextExtraction\Tests\Unit\ExtractionStrategy;
+namespace Xatham\TextExtraction\Tests\unit\ExtractionStrategy;
 
 use Prophecy\Argument\ArgumentsWildcard;
 use Prophecy\PhpUnit\ProphecyTrait;
@@ -45,7 +45,7 @@ final class ExtractionStrategyCsvTest extends TestCase
         $expectedDocument = new Document();
         $expectedDocument->setTextItems(
             [
-                "This is a textA second test.",
+                "This is a textA second test .",
             ]
         );
         self::assertEquals($expectedDocument, $textExtractor->extractSource($targetFileObject->reveal(), $config));
