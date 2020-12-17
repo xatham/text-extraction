@@ -22,7 +22,7 @@ class ExtractionStrategyOpenDocumentTest extends TestCase
     /**
      * @test
      */
-    public function it_should_parse_a_string_and_return_null(): void
+    public function it_should_parse_open_document_content_from_spl_file_object(): void
     {
         $config = new TextExtractionConfiguration(
             '/tmp',
