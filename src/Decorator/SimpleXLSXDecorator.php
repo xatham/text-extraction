@@ -6,7 +6,7 @@ namespace Xatham\TextExtraction\Decorator;
 
 use SimpleXLSX;
 
-class SimpleXLSCDecorator
+class SimpleXLSXDecorator
 {
     private SimpleXLSX $simpleXlsx;
 

@@ -7,7 +7,7 @@ namespace Xatham\TextExtraction\Tests\unit\ExtractionStrategy;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use SplFileObject;
-use Xatham\TextExtraction\Decorator\SimpleXLSCDecorator;
+use Xatham\TextExtraction\Decorator\SimpleXLSXDecorator;
 use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 use Xatham\TextExtraction\Dto\Document;
 use Xatham\TextExtraction\ExtractionStrategy\ExtractionStrategyExcel;
@@ -31,7 +31,7 @@ class ExtractionStrategyExcelTest extends TestCase
         $targetFileObject = $this->prophesize(SplFileObject::class);
         $targetFileObject->getPath()->willReturn('test')->shouldBeCalledOnce();
 
-        $excelAdapterMock = $this->prophesize(SimpleXLSCDecorator::class);
+        $excelAdapterMock = $this->prophesize(SimpleXLSXDecorator::class);
         $excelAdapterMock->parse(Argument::any())->willReturn('Test string')->shouldBeCalledOnce();
 
         $expectedDocument = new Document();

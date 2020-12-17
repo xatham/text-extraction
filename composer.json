@@ -8,6 +8,7 @@
     ],
     "require": {
         "ext-imagick": "*",
+        "ext-fileinfo": "*",
         "shuchkin/simplexlsx": "^0.8.19",
         "phpoffice/phpword": "^0.17.0",
         "smalot/pdfparser": "^0.17.1",

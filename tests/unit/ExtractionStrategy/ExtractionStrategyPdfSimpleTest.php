@@ -30,7 +30,7 @@ final class ExtractionStrategyPdfSimpleTest extends TestCase
         );
 
         $targetFileObject = $this->prophesize(SplFileObject::class);
-        $targetFileObject->fpassthru()->willReturn('test')->shouldBeCalledOnce();
+        $targetFileObject->fgets()->willReturn('Test string Another test string.')->shouldBeCalledOnce();
 
         $parseDocument = $this->prophesize(\Smalot\PdfParser\Document::class);
         $parseDocument->getText()->willReturn('Test string Another test string.');

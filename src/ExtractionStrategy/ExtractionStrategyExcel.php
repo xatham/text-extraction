@@ -5,20 +5,18 @@ declare(strict_types=1);
 namespace Xatham\TextExtraction\ExtractionStrategy;
 
 use ErrorException;
-use SimpleXLSX;
 use SplFileObject;
-use Xatham\TextExtraction\Decorator\SimpleXLSCDecorator;
+use Xatham\TextExtraction\Decorator\SimpleXLSXDecorator;
 use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 use Xatham\TextExtraction\Dto\Document;
-use Xatham\TextExtraction\Dto\TextSource;
 
 class ExtractionStrategyExcel implements ExtractionStrategyInterface
 {
     private const MIME_TYPE_EXCEL = 'application/vnd.ms-excel';
 
-    private SimpleXLSCDecorator $simpleXLSX;
+    private SimpleXLSXDecorator $simpleXLSX;
 
-    public function __construct(SimpleXLSCDecorator $simpleXLSX)
+    public function __construct(SimpleXLSXDecorator $simpleXLSX)
     {
         $this->simpleXLSX = $simpleXLSX;
     }

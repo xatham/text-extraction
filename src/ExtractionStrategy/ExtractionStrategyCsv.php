@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Xatham\TextExtraction\ExtractionStrategy;
 
-use SplFileInfo;
 use SplFileObject;
 use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 use Xatham\TextExtraction\Dto\Document;

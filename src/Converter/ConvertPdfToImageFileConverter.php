@@ -32,8 +32,9 @@ class ConvertPdfToImageFileConverter implements ImageConverterInterface
     public function convertPathTargetToImageFiles(SplFileObject $splFileObject, string $extensionType, ?string $alternatePath = null): array
     {
         $path = $splFileObject->getPath();
+        $realPath = $splFileObject->getRealPath();
         $this->imageDriver->setResolution(300, 300);
-        $this->imageDriver->readImage($path);
+        $this->imageDriver->readImage($realPath);
         $this->imageDriver->resetIterator();
 
         $baseNameWithoutExtension = $splFileObject->getBasename('.pdf');
@@ -61,6 +62,8 @@ class ConvertPdfToImageFileConverter implements ImageConverterInterface
 
         return $fileNames;
     }
+
+
 
     private function getGeneratedMultiFileStamp(): string
     {

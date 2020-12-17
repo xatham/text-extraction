@@ -30,20 +30,32 @@ class ExtractionStrategyPdfWithOCR implements ExtractionStrategyInterface
             $fileObject,
             'jpg'
         );
-        $parsedContentArray = [];
+        try {
+            $parsedContentArray = [];
 
-        foreach ($imageFilePathArray as $imageFilePath) {
-            $parsedContentArray[] = $this->pdfParser
-                ->image($imageFilePath)
-                ->run();
+            foreach ($imageFilePathArray as $imageFilePath) {
+                $parsedContentArray[] = $this->pdfParser
+                    ->image($imageFilePath)
+                    ->run();
+            }
+            $parsedContent = implode("\n", $parsedContentArray);
+
+        } finally {
+            $this->cleanUpGeneratedFiles($imageFilePathArray);
         }
-        $parsedContent = implode("\n", $parsedContentArray);
 
         return (new Document())->setTextItems([$parsedContent]);
     }
 
+    private function cleanUpGeneratedFiles(array $fileNames): void
+    {
+        foreach ($fileNames as $fileName) {
+            @unlink($fileName);
+        }
+    }
+
     public function canHandle(string $mimeType, TextExtractionConfiguration $configuration): bool
     {
-        return $mimeType === self::MIME_TYPE_PDF && $configuration->isWithOCRSupport() !== true;
+        return $mimeType === self::MIME_TYPE_PDF && $configuration->isWithOCRSupport() === true;
     }
 }

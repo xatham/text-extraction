@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Xatham\TextExtraction\ExtractionStrategy;
 
+use RuntimeException;
 use Smalot\PdfParser\Parser;
 use SplFileObject;
 use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
@@ -22,7 +23,12 @@ class ExtractionStrategyPdfSimple implements ExtractionStrategyInterface
 
     public function extractSource(SplFileObject $fileObject, TextExtractionConfiguration $textExtractionConfiguration): ?Document
     {
-        $content = $fileObject->fpassthru();
+        $content = '';
+        try {
+            while (($data = $fileObject->fgets()) !== false) {
+                $content .= $data;
+            }
+        } catch (RuntimeException $exception) {}
         $parsedDocument = $this->pdfParser->parseContent($content);
 
         return (new Document())->setTextItems([$parsedDocument->getText()]);
@@ -32,6 +38,6 @@ class ExtractionStrategyPdfSimple implements ExtractionStrategyInterface
     {
         return
             $mimeType === self::MIME_TYPE_PDF &&
-            $configuration->isWithOCRSupport() !== true;
+            $configuration->isWithOCRSupport() === false;
     }
 }
