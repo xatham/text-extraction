@@ -1,5 +1,6 @@
 {
     "name": "xatham/text-extraction",
+    "description": "Easy text extraction for many different file types",
     "authors": [
         {
             "name": "xatham",

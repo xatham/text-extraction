@@ -53,7 +53,7 @@ class ExtractionStrategyPdfWithOCR implements ExtractionStrategyInterface
     private function cleanUpGeneratedFiles(array $fileNames): void
     {
         foreach ($fileNames as $fileName) {
-            @unlink($fileName);
+            unlink($fileName);
         }
     }
 

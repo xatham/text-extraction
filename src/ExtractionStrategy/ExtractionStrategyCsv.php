@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Xatham\TextExtraction\ExtractionStrategy;
 
+use RuntimeException;
 use SplFileObject;
 use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 use Xatham\TextExtraction\Dto\Document;
@@ -16,12 +17,18 @@ class ExtractionStrategyCsv implements ExtractionStrategyInterface
     {
         $document = new Document();
         $text = '';
-        $fileObject->rewind();
+        $settings = $textExtractionConfiguration->getTypeSpecificSettings();
+        $csvSettings = $settings[self::MIME_TYPE] ?? [];
 
+        $fileObject->rewind();
         while ($fileObject->eof() === false) {
-            $row = $fileObject->fgetcsv();
+            $row = $fileObject->fgetcsv(
+                $csvSettings['delimiter'] ?? ',',
+                $csvSettings['enclosure'] ?? "\"",
+                $csvSettings['escape'] ?? "\\",
+            );
             if (is_array($row) === false) {
-                throw new \RuntimeException('Could not parse csv file');
+                throw new RuntimeException('Could not parse csv file');
             }
             $text .= trim(implode(' ', $row));
         }
