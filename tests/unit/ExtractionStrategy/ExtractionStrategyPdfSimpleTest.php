@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Xatham\TextExtraction\Tests\unit\ExtractionStrategy;
 
 use Prophecy\Argument;
+use Prophecy\Argument\ArgumentsWildcard;
 use Prophecy\PhpUnit\ProphecyTrait;
 use Smalot\PdfParser\Parser;
 use SplFileObject;
@@ -30,6 +31,15 @@ final class ExtractionStrategyPdfSimpleTest extends TestCase
         );
 
         $targetFileObject = $this->prophesize(SplFileObject::class);
+
+        $targetFileObject->eof()->will(function($args, $mock) {
+            $methodCalls = $mock->findProphecyMethodCalls(
+                'eof',
+                new ArgumentsWildcard($args)
+            );
+            return count($methodCalls) === 0 ? false : true;
+        })->shouldBeCalled();
+
         $targetFileObject->fgets()->willReturn('Test string Another test string.')->shouldBeCalledOnce();
 
         $parseDocument = $this->prophesize(\Smalot\PdfParser\Document::class);

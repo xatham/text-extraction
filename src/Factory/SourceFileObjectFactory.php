@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Xatham\TextExtraction\Builder;
+namespace Xatham\TextExtraction\Factory;
 
 use SplFileObject;
 
-final class SourceFileObjectBuilder
+class SourceFileObjectFactory
 {
     public function getExtractableFileObject(string $filePath): SplFileObject
     {
-        return new SplFileObject($filePath);
+        return new SplFileObject($filePath, 'rb');
     }
 }

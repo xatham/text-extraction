@@ -10,11 +10,16 @@ use SplFileObject;
 use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 use Xatham\TextExtraction\Dto\Document;
 use Xatham\TextExtraction\ExtractionStrategy\ExtractionStrategyInterface;
+use Xatham\TextExtraction\Factory\SourceFileObjectFactory;
+use Xatham\TextExtraction\Resolver\MimeTypeResolver;
 
 class TextExtractor implements TextExtractorInterface
 {
     private TextExtractionConfiguration $textExtractionConfiguration;
 
+    private MimeTypeResolver $mimeTypeResolver;
+
+    private SourceFileObjectFactory $sourceFileObjectFactory;
     /**
      * @var ExtractionStrategyInterface[]
      */
@@ -22,9 +27,13 @@ class TextExtractor implements TextExtractorInterface
 
     public function __construct(
         TextExtractionConfiguration $textExtractionConfiguration,
+        MimeTypeResolver $mimeTypeResolver,
+        SourceFileObjectFactory $sourceFileObjectFactory,
         ExtractionStrategyInterface... $extractionStrategies
     ) {
         $this->textExtractionConfiguration = $textExtractionConfiguration;
+        $this->mimeTypeResolver = $mimeTypeResolver;
+        $this->sourceFileObjectFactory = $sourceFileObjectFactory;
         $this->extractionStrategies = $extractionStrategies;
     }
 
@@ -36,10 +45,8 @@ class TextExtractor implements TextExtractorInterface
         ) {
             throw new RuntimeException('Imagick PHP-Extension is required to use OCR');
         }
-        $splFileObject = new SplFileObject($filePath, 'rb');
-        $finfo = new finfo(FILEINFO_MIME_TYPE);
-        $mimeType = $finfo->file($splFileObject->getRealPath());
-        $splFileObject->rewind();
+        $splFileObject = $this->sourceFileObjectFactory->getExtractableFileObject($filePath);
+        $mimeType = $this->mimeTypeResolver->getMimeTypeForTextSource($splFileObject);
 
         foreach ($this->extractionStrategies as $strategy) {
             if ($strategy->canHandle($mimeType, $this->textExtractionConfiguration) === false) {

@@ -13,6 +13,8 @@ use Xatham\TextExtraction\Factory\ExtractionStrategy\ExtractionStrategyPDFSimple
 use Xatham\TextExtraction\Factory\ExtractionStrategy\ExtractionStrategyPDFWithOCRFactory;
 use Xatham\TextExtraction\Factory\ExtractionStrategy\ExtractionStrategyTextFileFactory;
 use Xatham\TextExtraction\Factory\ExtractionStrategy\ExtractionStrategyWordDocFactory;
+use Xatham\TextExtraction\Factory\SourceFileObjectFactory;
+use Xatham\TextExtraction\Resolver\MimeTypeResolver;
 
 final class TextExtractionBuilder
 {
@@ -33,6 +35,11 @@ final class TextExtractionBuilder
             $strategies[] = (new $factory())->create();
         }
 
-        return new TextExtractor($textExtractionConfiguration, ...$strategies);
+        return new TextExtractor(
+            $textExtractionConfiguration,
+            new MimeTypeResolver(),
+            new SourceFileObjectFactory(),
+            ...$strategies
+        );
     }
 }

@@ -6,12 +6,13 @@ namespace Xatham\TextExtraction\Tests\unit\Extractor;
 
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
+use SplFileObject;
 use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 use Xatham\TextExtraction\Dto\Document;
-use Xatham\TextExtraction\Dto\TextItem;
 use Xatham\TextExtraction\ExtractionStrategy\ExtractionStrategyInterface;
 use Xatham\TextExtraction\Extractor\TextExtractor;
 use PHPUnit\Framework\TestCase;
+use Xatham\TextExtraction\Factory\SourceFileObjectFactory;
 use Xatham\TextExtraction\Resolver\MimeTypeResolver;
 
 final class TextExtractorTest extends TestCase
@@ -21,34 +22,40 @@ final class TextExtractorTest extends TestCase
     /**
      * @test
      */
-    public function it_should_parse_a_string_and_return_null(): void
+    public function it_should_handle_path_by_passing_it_to_strategy(): void
     {
         $config = new TextExtractionConfiguration(
-            true,
+            '/tmp',
             true,
             ['text/csv']
         );
-        $textExtractor = new TextExtractor($config, [], new MimeTypeResolver());
-        self::assertEquals(null, $textExtractor->extractByString('test'));
-    }
+        $extractionMock = $this->prophesize(ExtractionStrategyInterface::class);
 
-    /**
-     * @test
-     */
-    public function given_a_string_it_should_parse_it_and_return_the_parsed_test_string(): void
-    {
-        $expected = (new Document())->setTextItems([new TextItem('test')]);
+        $expectedDocument = new Document();
+        $expectedDocument->setTextItems(
+            [
+                "Test string Another test string.",
+            ]
+        );
 
-        $config = new TextExtractionConfiguration(true, ['text/csv']);
-        $strategyMock = $this->prophesize(ExtractionStrategyInterface::class);
-        $strategyMock->canHandle(Argument::any(), $config)->willReturn(true);
-        $strategyMock->extractSource(Argument::any())->willReturn($expected);
+        $targetFileObject = $this->prophesize(SplFileObject::class);
 
-        $strategies = [
-            $strategyMock->reveal()
-        ];
-        $textExtractor = new TextExtractor($config, $strategies, new MimeTypeResolver());
+        $extractionMock->canHandle(Argument::any(), $config)->willReturn(true);
+        $extractionMock->extractSource(Argument::any(), $config)->willReturn($expectedDocument);
 
-        self::assertEquals($expected, $textExtractor->extractByString('test'));
+        $mimeTypeResolverMock = $this->prophesize(MimeTypeResolver::class);
+        $mimeTypeResolverMock->getMimeTypeForTextSource($targetFileObject->reveal())->willReturn('text/plain');
+
+        $sourceFileObjectFactoryMock = $this->prophesize(SourceFileObjectFactory::class);
+        $sourceFileObjectFactoryMock->getExtractableFileObject(Argument::any())->willReturn($targetFileObject);
+
+        $textExtractor = new TextExtractor(
+            $config,
+            $mimeTypeResolverMock->reveal(),
+            $sourceFileObjectFactoryMock->reveal(),
+            $extractionMock->reveal()
+        );
+
+        self::assertEquals($expectedDocument, $textExtractor->extractByFilePath('/tmp/test'));
     }
 }

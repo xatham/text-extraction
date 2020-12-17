@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Xatham\TextExtraction\Resolver;
 
-use Xatham\TextExtraction\Dto\TextSource;
+use finfo;
+use SplFileObject;
 
 class MimeTypeResolver
 {
-    public function getMimeTypeForTextSource(TextSource $textSource): string
+    public function getMimeTypeForTextSource(SplFileObject $splFileObject): string
     {
-        return 'text/csv';
+        $fileInfo = new finfo(FILEINFO_MIME_TYPE);
+        return $fileInfo->file($splFileObject->getRealPath());
     }
 }

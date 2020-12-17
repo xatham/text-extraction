@@ -25,6 +25,7 @@ final class ConvertPdfToImageFileConverterTest extends TestCase
     {
         $targetFileObject = $this->prophesize(SplFileObject::class);
         $targetFileObject->getPath()->willReturn('test')->shouldBeCalledOnce();
+        $targetFileObject->getRealPath()->willReturn('test')->shouldBeCalledOnce();
         $targetFileObject->getbaseName('.pdf')->willReturn('test')->shouldBeCalledOnce();
 
         $imagickMock = $this->prophesize(Imagick::class);
