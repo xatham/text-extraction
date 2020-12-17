@@ -7,6 +7,7 @@ namespace Xatham\TextExtraction\Converter;
 use DateTimeImmutable;
 use Imagick;
 use ImagickException;
+use RuntimeException;
 use SplFileObject;
 use Xatham\TextExtraction\Factory\FileFinderFactory;
 
@@ -33,6 +34,9 @@ class ConvertPdfToImageFileConverter implements ImageConverterInterface
     {
         $path = $splFileObject->getPath();
         $realPath = $splFileObject->getRealPath();
+        if ($realPath === false) {
+            throw new RuntimeException('Unable to retrieve path for current file object');
+        }
         $this->imageDriver->setResolution(300, 300);
         $this->imageDriver->readImage($realPath);
         $this->imageDriver->resetIterator();
@@ -57,7 +61,11 @@ class ConvertPdfToImageFileConverter implements ImageConverterInterface
 
         $fileNames = [];
         foreach ($finder as $file) {
-            $fileNames[] = $file->getRealPath();
+            $realPath = $file->getRealPath();
+            if ($realPath === false) {
+                throw new RuntimeException('Unable to retrieve path for newly created image file. Check folder permissions');
+            }
+            $fileNames[] = $realPath;
         }
 
         return $fileNames;

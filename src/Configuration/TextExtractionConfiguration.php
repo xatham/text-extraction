@@ -13,10 +13,16 @@ class TextExtractionConfiguration
 
     private bool $withOCRSupport;
 
+    /**
+     * @var string[]
+     */
     private array $validMimeTypeCollection = [];
 
     private string $rootPath;
 
+    /**
+     * @var array<string, array<string>>
+     */
     private array $typeSpecificSettings = [
         self::MIME_TYPE_CSV => [
             'delimiter' => ';',
@@ -25,8 +31,16 @@ class TextExtractionConfiguration
         ]
     ];
 
-    public function __construct(string $rootPath, bool $withOCRSupport, array $typeSpecificSettings = null, array $validMimeTypeCollection = null)
-    {
+    /**
+     * @param array<string, array<string>> $typeSpecificSettings
+     * @param string[] $validMimeTypeCollection
+     */
+    public function __construct(
+        string $rootPath,
+        bool $withOCRSupport,
+        array $typeSpecificSettings = null,
+        array $validMimeTypeCollection = null
+    ) {
         $this->rootPath = $rootPath;
         $this->withOCRSupport = $withOCRSupport;
         $this->typeSpecificSettings = $typeSpecificSettings ?? $this->typeSpecificSettings;
@@ -38,6 +52,9 @@ class TextExtractionConfiguration
         return $this->withOCRSupport;
     }
 
+    /**
+     * @return string[]
+     */
     public function getValidMimeTypeCollection(): array
     {
         return $this->validMimeTypeCollection;

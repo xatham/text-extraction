@@ -8,5 +8,8 @@ use SplFileObject;
 
 interface ImageConverterInterface
 {
+    /**
+     * @return string[]
+     */
     public function convertPathTargetToImageFiles(SplFileObject $splFileObject, string $extensionType, ?string $alternatePath): array;
 }

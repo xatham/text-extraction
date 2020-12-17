@@ -18,7 +18,11 @@ class ExtractionStrategyCsv implements ExtractionStrategyInterface
         $text = '';
         $fileObject->rewind();
 
-        while (($row = $fileObject->fgetcsv()) !== false) {
+        while ($fileObject->eof() === false) {
+            $row = $fileObject->fgetcsv();
+            if (is_array($row) === false) {
+                throw new \RuntimeException('Could not parse csv file');
+            }
             $text .= trim(implode(' ', $row));
         }
         $document->setTextItems([$text]);

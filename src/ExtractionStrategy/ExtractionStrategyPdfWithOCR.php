@@ -47,6 +47,9 @@ class ExtractionStrategyPdfWithOCR implements ExtractionStrategyInterface
         return (new Document())->setTextItems([$parsedContent]);
     }
 
+    /**
+     * @param string[] $fileNames
+     */
     private function cleanUpGeneratedFiles(array $fileNames): void
     {
         foreach ($fileNames as $fileName) {

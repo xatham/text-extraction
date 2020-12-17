@@ -15,6 +15,9 @@ class SimpleXLSXDecorator
         $this->simpleXlsx = $simpleXlsx;
     }
 
+    /**
+     * @return bool|SimpleXLSX
+     */
     public function parse(string $path)
     {
         return SimpleXLSX::parse($path);

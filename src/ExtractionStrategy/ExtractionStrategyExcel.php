@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Xatham\TextExtraction\ExtractionStrategy;
 
 use ErrorException;
+use SimpleXLSX;
 use SplFileObject;
 use Xatham\TextExtraction\Decorator\SimpleXLSXDecorator;
 use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
@@ -24,11 +25,16 @@ class ExtractionStrategyExcel implements ExtractionStrategyInterface
     public function extractSource(SplFileObject $fileObject, TextExtractionConfiguration $textExtractionConfiguration): ?Document
     {
         $document = new Document();
-        $rows = $this->simpleXLSX->parse($fileObject->getPath());
-        if (!$rows) {
+        $content = $this->simpleXLSX->parse($fileObject->getPath());
+        if (!$content instanceof SimpleXLSX) {
             throw new ErrorException('Could not parse Excel file');
         }
-        $document->setTextItems([$rows]);
+        /** @var SimpleXLSX $content */
+        $rows = $content->rows();
+        if (count($rows) === 0) {
+            return $document;
+        }
+        $document->setTextItems($rows);
 
         return $document;
     }

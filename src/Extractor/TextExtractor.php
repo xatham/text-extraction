@@ -45,8 +45,16 @@ class TextExtractor implements TextExtractorInterface
         ) {
             throw new RuntimeException('Imagick PHP-Extension is required to use OCR');
         }
+        $validMimeTypes = $this->textExtractionConfiguration->getValidMimeTypeCollection();
         $splFileObject = $this->sourceFileObjectFactory->getExtractableFileObject($filePath);
         $mimeType = $this->mimeTypeResolver->getMimeTypeForTextSource($splFileObject);
+
+        if (count($validMimeTypes) > 0 && in_array($mimeType, $validMimeTypes, true) === false) {
+            throw new RuntimeException(
+                sprintf('Mimetype of type %s is not valid. Please adjust valid mimetypes or use different document',
+                    $mimeType)
+            );
+        }
 
         foreach ($this->extractionStrategies as $strategy) {
             if ($strategy->canHandle($mimeType, $this->textExtractionConfiguration) === false) {

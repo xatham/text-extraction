@@ -14,9 +14,13 @@ class ExtractionStrategyTextFile implements ExtractionStrategyInterface
 
     public function extractSource(SplFileObject $fileObject, TextExtractionConfiguration $textExtractionConfiguration): ?Document
     {
+        $content = '';
+        while ($fileObject->eof() === false) {
+            $content .= $fileObject->fgets();
+        }
+
         $document = new Document();
-        $text = $fileObject->fpassthru();
-        $document->setTextItems([$text]);
+        $document->setTextItems([$content]);
 
         return $document;
     }

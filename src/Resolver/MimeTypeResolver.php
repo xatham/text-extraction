@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Xatham\TextExtraction\Resolver;
 
 use finfo;
+use RuntimeException;
 use SplFileObject;
 
 class MimeTypeResolver
@@ -12,6 +13,14 @@ class MimeTypeResolver
     public function getMimeTypeForTextSource(SplFileObject $splFileObject): string
     {
         $fileInfo = new finfo(FILEINFO_MIME_TYPE);
-        return $fileInfo->file($splFileObject->getRealPath());
+        $path = $splFileObject->getRealPath();
+        if ($path === false) {
+            throw new RuntimeException(sprintf('Unable to retrieve real path for given file object'));
+        }
+        $mimeType = $fileInfo->file($path);
+        if ($mimeType === false) {
+            throw new RuntimeException(sprintf('Unable to determine mime type for file %s', $path));
+        }
+        return $mimeType;
     }
 }
