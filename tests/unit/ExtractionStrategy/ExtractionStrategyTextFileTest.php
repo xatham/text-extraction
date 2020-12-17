@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Xatham\TextExtraction\Tests\unit\ExtractionStrategy;
 
+use Prophecy\Argument\ArgumentsWildcard;
 use Prophecy\PhpUnit\ProphecyTrait;
 use SplFileObject;
 use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
@@ -27,7 +28,24 @@ final class ExtractionStrategyTextFileTest extends TestCase
         );
 
         $targetFileObject = $this->prophesize(SplFileObject::class);
-        $targetFileObject->fpassthru()->willReturn('Test string Another test string.')->shouldBeCalledOnce();
+        $targetFileObject->eof()->will(function($args, $mock) {
+            $methodCalls = $mock->findProphecyMethodCalls(
+                'eof',
+                new ArgumentsWildcard($args)
+            );
+            return count($methodCalls) < 1 ? false : true;
+        })->shouldBeCalled();
+
+        $textData = [
+            "Test string Another test string.",
+        ];
+        $targetFileObject->fgets()->will(function($args, $mock) use ($textData) {
+            $methodCalls = $mock->findProphecyMethodCalls(
+                'fgetcsv',
+                new ArgumentsWildcard($args)
+            );
+            return count($methodCalls) < 1 ? $textData[count($methodCalls)] : false;
+        });
 
         $expectedDocument = new Document();
         $expectedDocument->setTextItems(

@@ -27,12 +27,19 @@ final class ExtractionStrategyCsvTest extends TestCase
             ['text/csv'],
         );
         $targetFileObject = $this->prophesize(SplFileObject::class);
+        $targetFileObject->rewind()->shouldBeCalledOnce();
+        $targetFileObject->eof()->will(function($args, $mock) {
+            $methodCalls = $mock->findProphecyMethodCalls(
+                'eof',
+                new ArgumentsWildcard($args)
+            );
+            return count($methodCalls) < 2 ? false : true;
+        })->shouldBeCalled();
+
         $textData = [
             ["This", "is" , "a", "text"],
             ["A", "second" , "test", "."],
         ];
-
-        $targetFileObject->rewind()->shouldBeCalledOnce();
         $targetFileObject->fgetcsv()->will(function($args, $mock) use ($textData) {
             $methodCalls = $mock->findProphecyMethodCalls(
                 'fgetcsv',

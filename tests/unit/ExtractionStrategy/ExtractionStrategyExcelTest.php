@@ -31,8 +31,11 @@ class ExtractionStrategyExcelTest extends TestCase
         $targetFileObject = $this->prophesize(SplFileObject::class);
         $targetFileObject->getPath()->willReturn('test')->shouldBeCalledOnce();
 
+        $simpleXLSXMock = $this->prophesize(\SimpleXLSX::class);
+        $simpleXLSXMock->rows()->willReturn(['Test string']);
+
         $excelAdapterMock = $this->prophesize(SimpleXLSXDecorator::class);
-        $excelAdapterMock->parse(Argument::any())->willReturn('Test string')->shouldBeCalledOnce();
+        $excelAdapterMock->parse(Argument::any())->willReturn($simpleXLSXMock->reveal())->shouldBeCalledOnce();
 
         $expectedDocument = new Document();
         $expectedDocument->setTextItems(
