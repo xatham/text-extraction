@@ -28,11 +28,14 @@ composer require xatham/text-extraction
 
 ```php
 
+/**
+ * Extracting only pdf files, without ocr capturing
+ */
 $textExtractor = (new TextExtractionBuilder())->buildTextExtractor(
-    new TextExtractionConfiguration(
-        '/tmp',
-        false,
-    )
+    [
+        'withOcr' => false,
+        'validMimeTypes' =>  ['application/pdf'],
+    ],
 );
 
 $target = dirname(__DIR__) . '/examples/sample.pdf';
