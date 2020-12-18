@@ -15,29 +15,29 @@ jobs:
         php-versions: ['7.4']
     name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
     steps:
-    - uses: actions/checkout@v2
-    - name: Install PHP
-      uses: shivammathur/setup-php@v2
-      with:
-        php-version: ${{ matrix.php-versions }}
-        extensions: mbstring, xdebug, pcov, intl, gd, redis, xml, soap, imagick, ast, phalcon4, msgpack, gearman
+      - uses: actions/checkout@v2
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          extensions: mbstring, xdebug, pcov, intl, gd, redis, xml, soap, imagick, ast, phalcon4, msgpack, gearman
 
-    - name: Validate composer.json and composer.lock
-      run: composer validate
+      - name: Validate composer.json and composer.lock
+        run: composer validate
 
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v2
-      with:
-        php-version: ${{ matrix.php-versions }}
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
 
-    - name: Install dependencies
-      if: steps.composer-cache.outputs.cache-hit != 'true'
-      run: composer install --prefer-dist --no-progress --no-suggest
+      - name: Install dependencies
+        if: steps.composer-cache.outputs.cache-hit != 'true'
+        run: composer install --prefer-dist --no-progress --no-suggest
 
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
@@ -57,8 +57,8 @@ jobs:
           php-version: "7.4"
 
       - name: "Determine composer cache directory"
-          id: "determine-composer-cache-directory"
-          run: 'echo "::set-output name=directory::$(composer config cache-dir)"'
+        id: "determine-composer-cache-directory"
+        run: 'echo "::set-output name=directory::$(composer config cache-dir)"'
 
       - name: "Cache dependencies installed with composer"
         uses: "actions/cache@v1"
