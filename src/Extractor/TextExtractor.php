@@ -7,7 +7,6 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
  */
 
 declare(strict_types=1);
@@ -37,7 +36,7 @@ class TextExtractor implements TextExtractorInterface
         TextExtractionConfiguration $textExtractionConfiguration,
         MimeTypeResolver $mimeTypeResolver,
         SourceFileObjectFactory $sourceFileObjectFactory,
-        ExtractionStrategyInterface... $extractionStrategies
+        ExtractionStrategyInterface ...$extractionStrategies
     ) {
         $this->textExtractionConfiguration = $textExtractionConfiguration;
         $this->mimeTypeResolver = $mimeTypeResolver;
@@ -58,16 +57,14 @@ class TextExtractor implements TextExtractorInterface
         $mimeType = $this->mimeTypeResolver->getMimeTypeForTextSource($splFileObject);
 
         if (count($validMimeTypes) > 0 && in_array($mimeType, $validMimeTypes, true) === false) {
-            throw new RuntimeException(
-                sprintf('Mimetype of type %s is not valid. Please adjust valid mimetypes or use different document',
-                    $mimeType)
-            );
+            throw new RuntimeException(sprintf('Mimetype of type %s is not valid. Please adjust valid mimetypes or use different document', $mimeType));
         }
 
         foreach ($this->extractionStrategies as $strategy) {
             if ($strategy->canHandle($mimeType, $this->textExtractionConfiguration) === false) {
                 continue;
             }
+
             return $strategy->extractSource($splFileObject, $this->textExtractionConfiguration);
         }
 

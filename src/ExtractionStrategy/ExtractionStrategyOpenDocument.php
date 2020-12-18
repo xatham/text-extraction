@@ -7,7 +7,6 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
  */
 
 declare(strict_types=1);
@@ -42,7 +41,7 @@ class ExtractionStrategyOpenDocument implements ExtractionStrategyInterface
 
         $docParser = $this->docParser->load($filePath);
         $sections = $docParser->getSections();
-        $document =  new Document();
+        $document = new Document();
 
         if (count($sections) === 0) {
             return $document;

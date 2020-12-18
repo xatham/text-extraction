@@ -7,7 +7,6 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
  */
 
 declare(strict_types=1);
@@ -34,8 +33,8 @@ class ExtractionStrategyCsv implements ExtractionStrategyInterface
         while ($fileObject->eof() === false) {
             $row = $fileObject->fgetcsv(
                 $csvSettings['delimiter'] ?? ',',
-                $csvSettings['enclosure'] ?? "\"",
-                $csvSettings['escape'] ?? "\\",
+                $csvSettings['enclosure'] ?? '"',
+                $csvSettings['escape'] ?? '\\',
             );
             if (is_array($row) === false) {
                 throw new RuntimeException('Could not parse csv file');

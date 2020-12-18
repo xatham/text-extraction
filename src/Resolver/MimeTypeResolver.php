@@ -7,7 +7,6 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
  */
 
 declare(strict_types=1);
@@ -31,6 +30,7 @@ class MimeTypeResolver
         if ($mimeType === false) {
             throw new RuntimeException(sprintf('Unable to determine mime type for file %s', $path));
         }
+
         return $mimeType;
     }
 }

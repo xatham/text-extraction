@@ -59,6 +59,7 @@ final class TextExtractionBuilder
         foreach ($factories as $factory) {
             $strategies[] = (new $factory())->create($textExtractionConfiguration);
         }
+
         return new TextExtractor(
             $textExtractionConfiguration,
             new MimeTypeResolver(),

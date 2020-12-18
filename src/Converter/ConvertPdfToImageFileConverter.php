@@ -7,7 +7,6 @@
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
  */
 
 declare(strict_types=1);
@@ -52,9 +51,9 @@ class ConvertPdfToImageFileConverter implements ImageConverterInterface
         $this->imageDriver->resetIterator();
 
         $baseNameWithoutExtension = $splFileObject->getBasename('.pdf');
-        # $adjoin = $this->imageDriver->count() < 400;
-        $multiFileNameStamp = $baseNameWithoutExtension . $this->getGeneratedMultiFileStamp() . '.'. $extensionType;
-        $tempTargetPath     = $path . DIRECTORY_SEPARATOR . $multiFileNameStamp;
+        // $adjoin = $this->imageDriver->count() < 400;
+        $multiFileNameStamp = $baseNameWithoutExtension . $this->getGeneratedMultiFileStamp() . '.' . $extensionType;
+        $tempTargetPath = $path . DIRECTORY_SEPARATOR . $multiFileNameStamp;
 
         $this->imageDriver->setImageFormat($extensionType);
         $this->imageDriver->appendImages(false);
@@ -81,8 +80,6 @@ class ConvertPdfToImageFileConverter implements ImageConverterInterface
 
         return $fileNames;
     }
-
-
 
     private function getGeneratedMultiFileStamp(): string
     {

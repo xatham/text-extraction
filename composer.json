@@ -32,11 +32,14 @@
         "phpunit/phpunit": "^9.5",
         "phpspec/prophecy-phpunit": "^2.0",
         "phpstan/phpstan": "^0.12.62",
-        "phpmd/phpmd": "^2.9"
+        "phpmd/phpmd": "^2.9",
+        "friendsofphp/php-cs-fixer": "^2.17"
     },
     "scripts": {
         "phpstan": "vendor/bin/phpstan analyse src -l 8",
         "phpunit": "vendor/bin/phpunit --testsuite unit",
-        "phpmd": " vendor/bin/phpmd src text ruleset.xml"
+        "phpmd": " vendor/bin/phpmd src text ruleset.xml",
+        "phpcs-dry": "vendor/bin/php-cs-fixer fix src/ --dry-run  -v",
+        "phpcs": "vendor/bin/php-cs-fixer fix src/ -v"
     }
 }
