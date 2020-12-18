@@ -40,7 +40,7 @@ jobs:
         run: composer install --prefer-dist --no-progress --no-suggest
 
       - name: "Run phpstan"
-      run: "composer run phpstan"
+        run: "composer run phpstan"
 
       - name: "Run tests"
         run: "composer run phpunit"
