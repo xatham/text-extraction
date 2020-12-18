@@ -8,6 +8,7 @@
         }
     ],
     "require": {
+        "php": "^7.4",
         "ext-imagick": "*",
         "ext-fileinfo": "*",
         "shuchkin/simplexlsx": "^0.8.19",
