@@ -1,3 +1,5 @@
+![PHP Composer](https://github.com/xatham/text-extraction/workflows/PHP%20Composer/badge.svg)
+
 # text-extraction
 
 ## About
