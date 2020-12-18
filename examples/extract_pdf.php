@@ -3,15 +3,14 @@
 declare(strict_types=1);
 
 use Xatham\TextExtraction\Builder\TextExtractionBuilder;
-use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 
 require dirname(__DIR__). '/vendor/autoload.php';
 
 $textExtractor = (new TextExtractionBuilder())->buildTextExtractor(
-    new TextExtractionConfiguration(
-        '/tmp',
-        false,
-    )
+    [
+        'withOcr' => false,
+        'validMimeTypes' =>  ['application/pdf'],
+    ],
 );
 
 $target = dirname(__DIR__) . '/examples/sample.pdf';

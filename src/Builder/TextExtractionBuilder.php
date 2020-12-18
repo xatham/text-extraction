@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Xatham\TextExtraction\Builder;
 
+use InvalidArgumentException;
 use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 use Xatham\TextExtraction\Extractor\TextExtractor;
 use Xatham\TextExtraction\Factory\ExtractionStrategy\ExtractionStrategyCsvFactory;
@@ -18,8 +19,23 @@ use Xatham\TextExtraction\Resolver\MimeTypeResolver;
 
 final class TextExtractionBuilder
 {
-    public function buildTextExtractor(TextExtractionConfiguration $textExtractionConfiguration): TextExtractor
+    /**
+     * @param array<string, mixed> $configuration
+     */
+    public function buildTextExtractor(array $configuration): TextExtractor
     {
+        $withOcr = $configuration['withOcr'] ?? false;
+        $tempDir = $configuration['tempDir'] ?? sys_get_temp_dir();
+        $mimeTypeSettings = $configuration['mimeTypeSettings'] ?? null;
+        $validMimeTypes = $this->extractValidMimeTypes($configuration);
+
+        $textExtractionConfiguration = new TextExtractionConfiguration(
+            $withOcr,
+            $tempDir,
+            $mimeTypeSettings,
+            $validMimeTypes
+        );
+
         $factories = [
             ExtractionStrategyCsvFactory::class,
             ExtractionStrategyExcelFactory::class,
@@ -32,14 +48,31 @@ final class TextExtractionBuilder
 
         $strategies = [];
         foreach ($factories as $factory) {
-            $strategies[] = (new $factory())->create();
+            $strategies[] = (new $factory())->create($textExtractionConfiguration);
         }
-
         return new TextExtractor(
             $textExtractionConfiguration,
             new MimeTypeResolver(),
             new SourceFileObjectFactory(),
             ...$strategies
         );
+    }
+
+    /**
+     * @param array<string, mixed> $configuration
+     *
+     * @return string[]
+     */
+    private function extractValidMimeTypes(array $configuration): array
+    {
+        $validMimeTypes = $configuration['validMimeTypes'] ?? null;
+        if ($validMimeTypes === null) {
+            return [];
+        }
+        if (is_array($validMimeTypes) === false) {
+            throw new InvalidArgumentException('validMimeTypes expects an array');
+        }
+
+        return $validMimeTypes;
     }
 }

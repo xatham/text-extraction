@@ -14,22 +14,18 @@ use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 use Xatham\TextExtraction\Dto\Document;
 use Xatham\TextExtraction\ExtractionStrategy\ExtractionStrategyOpenDocument;
 use PHPUnit\Framework\TestCase;
+use Xatham\TextExtraction\Tests\helper\UnitTestHelperTrait;
 
 class ExtractionStrategyOpenDocumentTest extends TestCase
 {
-    use ProphecyTrait;
+    use ProphecyTrait, UnitTestHelperTrait;
 
     /**
      * @test
      */
     public function it_should_parse_open_document_content_from_spl_file_object(): void
     {
-        $config = new TextExtractionConfiguration(
-            '/tmp',
-            true,
-            ['text/csv'],
-        );
-
+        $config = $this->getConfigurationDummy();
         $targetFileObject = $this->prophesize(SplFileObject::class);
         $targetFileObject->getPath()->willReturn('test')->shouldBeCalledOnce();
 

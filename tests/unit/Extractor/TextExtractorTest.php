@@ -14,21 +14,18 @@ use Xatham\TextExtraction\Extractor\TextExtractor;
 use PHPUnit\Framework\TestCase;
 use Xatham\TextExtraction\Factory\SourceFileObjectFactory;
 use Xatham\TextExtraction\Resolver\MimeTypeResolver;
+use Xatham\TextExtraction\Tests\helper\UnitTestHelperTrait;
 
 final class TextExtractorTest extends TestCase
 {
-    use ProphecyTrait;
+    use ProphecyTrait, UnitTestHelperTrait;
 
     /**
      * @test
      */
     public function it_should_handle_path_by_passing_it_to_strategy(): void
     {
-        $config = new TextExtractionConfiguration(
-            '/tmp',
-            true,
-            ['text/csv']
-        );
+        $config = $this->getConfigurationDummy();
         $extractionMock = $this->prophesize(ExtractionStrategyInterface::class);
 
         $expectedDocument = new Document();

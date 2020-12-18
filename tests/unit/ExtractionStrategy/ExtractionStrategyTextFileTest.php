@@ -11,22 +11,18 @@ use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 use Xatham\TextExtraction\Dto\Document;
 use Xatham\TextExtraction\ExtractionStrategy\ExtractionStrategyTextFile;
 use PHPUnit\Framework\TestCase;
+use Xatham\TextExtraction\Tests\helper\UnitTestHelperTrait;
 
 final class ExtractionStrategyTextFileTest extends TestCase
 {
-    use ProphecyTrait;
+    use ProphecyTrait, UnitTestHelperTrait;
 
     /**
      * @test
      */
     public function it_should_parse_textfile_content_from_spl_file_object(): void
     {
-        $config = new TextExtractionConfiguration(
-            '/tmp',
-            true,
-            ['text/csv'],
-        );
-
+        $config = $this->getConfigurationDummy();
         $targetFileObject = $this->prophesize(SplFileObject::class);
         $targetFileObject->eof()->will(function($args, $mock) {
             $methodCalls = $mock->findProphecyMethodCalls(

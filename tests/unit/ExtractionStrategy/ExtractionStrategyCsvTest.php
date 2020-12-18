@@ -7,25 +7,21 @@ namespace Xatham\TextExtraction\Tests\unit\ExtractionStrategy;
 use Prophecy\Argument\ArgumentsWildcard;
 use Prophecy\PhpUnit\ProphecyTrait;
 use SplFileObject;
-use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 use PHPUnit\Framework\TestCase;
 use Xatham\TextExtraction\Dto\Document;
 use Xatham\TextExtraction\ExtractionStrategy\ExtractionStrategyCsv;
+use Xatham\TextExtraction\Tests\helper\UnitTestHelperTrait;
 
 final class ExtractionStrategyCsvTest extends TestCase
 {
-    use ProphecyTrait;
+    use ProphecyTrait, UnitTestHelperTrait;
 
     /**
      * @test
      */
     public function it_should_parse_csv_content_from_spl_file_object(): void
     {
-        $config = new TextExtractionConfiguration(
-            '/tmp',
-            true,
-            ['text/csv'],
-        );
+        $config = $this->getConfigurationDummy();
         $targetFileObject = $this->prophesize(SplFileObject::class);
         $targetFileObject->rewind()->shouldBeCalledOnce();
         $targetFileObject->eof()->will(function($args, $mock) {
@@ -40,7 +36,7 @@ final class ExtractionStrategyCsvTest extends TestCase
             ["This", "is" , "a", "text"],
             ["A", "second" , "test", "."],
         ];
-        $targetFileObject->fgetcsv()->will(function($args, $mock) use ($textData) {
+        $targetFileObject->fgetcsv(",", "\"", "\\")->will(function($args, $mock) use ($textData) {
             $methodCalls = $mock->findProphecyMethodCalls(
                 'fgetcsv',
                 new ArgumentsWildcard($args)

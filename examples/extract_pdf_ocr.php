@@ -8,10 +8,11 @@ use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 require dirname(__DIR__). '/vendor/autoload.php';
 
 $textExtractor = (new TextExtractionBuilder())->buildTextExtractor(
-    new TextExtractionConfiguration(
-        '/tmp',
-        true,
-    )
+    [
+        'withOcr' => true,
+        'validMimeTypes' =>  ['application/pdf'],
+        'tempDir' => '/tmp',
+    ],
 );
 
 $target = dirname(__DIR__) . '/examples/sample.pdf';

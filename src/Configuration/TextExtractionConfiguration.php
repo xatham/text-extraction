@@ -28,16 +28,20 @@ class TextExtractionConfiguration
         ]
     ];
 
+    private string $tempDir;
+
     /**
      * @param array<string, array<string>> $typeSpecificSettings
      * @param string[] $validMimeTypeCollection
      */
     public function __construct(
         bool $withOCRSupport,
+        string $tempDir,
         array $typeSpecificSettings = null,
         array $validMimeTypeCollection = null
     ) {
         $this->withOCRSupport = $withOCRSupport;
+        $this->tempDir = $tempDir;
         $this->typeSpecificSettings = $typeSpecificSettings ?? $this->typeSpecificSettings;
         $this->validMimeTypeCollection = $validMimeTypeCollection ?? $this->validMimeTypeCollection;
     }
@@ -61,5 +65,10 @@ class TextExtractionConfiguration
     public function getTypeSpecificSettings(): array
     {
         return $this->typeSpecificSettings;
+    }
+
+    public function getTempDir(): string
+    {
+        return $this->tempDir;
     }
 }

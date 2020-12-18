@@ -32,7 +32,7 @@ class ConvertPdfToImageFileConverter implements ImageConverterInterface
      */
     public function convertPathTargetToImageFiles(SplFileObject $splFileObject, string $extensionType, ?string $alternatePath = null): array
     {
-        $path = $splFileObject->getPath();
+        $path = $alternatePath ?? $splFileObject->getPath();
         $realPath = $splFileObject->getRealPath();
         if ($realPath === false) {
             throw new RuntimeException('Unable to retrieve path for current file object');
@@ -55,6 +55,7 @@ class ConvertPdfToImageFileConverter implements ImageConverterInterface
         $finder = $this->fileFinderFactory->createFinder();
         $finder
             ->files()
+            ->ignoreUnreadableDirs()
             ->in($path)
             ->name('*' . $this->getGeneratedMultiFileStamp() . '*')
             ->sortByName(true);
