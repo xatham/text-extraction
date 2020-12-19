@@ -30,6 +30,7 @@ class ExtractionStrategyCsv implements ExtractionStrategyInterface
         $csvSettings = $settings[self::MIME_TYPE] ?? [];
 
         $fileObject->rewind();
+        var_dump($csvSettings);
         while ($fileObject->eof() === false) {
             $row = $fileObject->fgetcsv(
                 $csvSettings['delimiter'] ?? ',',

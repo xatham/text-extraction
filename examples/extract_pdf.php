@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file is part of the Xatham/text-extraction package.
+ * This file is part of the xatham/text-extraction package.
  *
  * (c) Xatham <s.kirejewski@googlemail.com>
  *

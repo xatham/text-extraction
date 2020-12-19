@@ -65,7 +65,12 @@ class TextExtractor implements TextExtractorInterface
                 continue;
             }
 
-            return $strategy->extractSource($splFileObject, $this->textExtractionConfiguration);
+            $document = $strategy->extractSource($splFileObject, $this->textExtractionConfiguration);
+            if ($document === null) {
+                return null;
+            }
+
+            return $document->setMimeType($mimeType);
         }
 
         return null;

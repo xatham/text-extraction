@@ -15,11 +15,11 @@ namespace Xatham\TextExtraction\Configuration;
 
 class TextExtractionConfiguration
 {
-    private const OCR_KEY = 'with_ocr';
-
     private const MIME_TYPE_CSV = 'text/csv';
 
     private bool $withOCRSupport;
+
+    private bool $pagination;
 
     /**
      * @var string[]
@@ -31,9 +31,9 @@ class TextExtractionConfiguration
      */
     private array $typeSpecificSettings = [
         self::MIME_TYPE_CSV => [
-            'delimiter' => ';',
-            'escapeChar' => '"',
-            'lineSeparator' => "\n",
+            'delimiter' => ',',
+            'enclosure' => '"',
+            'escape' => '\\',
         ],
     ];
 
@@ -41,18 +41,20 @@ class TextExtractionConfiguration
 
     /**
      * @param array<string, array<string>> $typeSpecificSettings
-     * @param string[]                     $validMimeTypeCollection
+     * @param string[] $validMimeTypeCollection
      */
     public function __construct(
         bool $withOCRSupport,
+        bool $pagination,
         string $tempDir,
-        array $typeSpecificSettings = null,
-        array $validMimeTypeCollection = null
+        array $typeSpecificSettings,
+        array $validMimeTypeCollection
     ) {
         $this->withOCRSupport = $withOCRSupport;
+        $this->pagination = $pagination;
         $this->tempDir = $tempDir;
-        $this->typeSpecificSettings = $typeSpecificSettings ?? $this->typeSpecificSettings;
-        $this->validMimeTypeCollection = $validMimeTypeCollection ?? $this->validMimeTypeCollection;
+        $this->typeSpecificSettings = array_merge($this->typeSpecificSettings, $typeSpecificSettings);
+        $this->validMimeTypeCollection = array_merge($this->validMimeTypeCollection, $validMimeTypeCollection);
     }
 
     public function isWithOCRSupport(): bool
@@ -68,6 +70,7 @@ class TextExtractionConfiguration
         return $this->validMimeTypeCollection;
     }
 
+
     /**
      * @return array<string, array<string>>
      */
@@ -79,5 +82,13 @@ class TextExtractionConfiguration
     public function getTempDir(): string
     {
         return $this->tempDir;
+    }
+
+    /**
+     * @return bool
+     */
+    public function withPagination(): bool
+    {
+        return $this->pagination;
     }
 }

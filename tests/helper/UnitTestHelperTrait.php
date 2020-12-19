@@ -12,7 +12,9 @@ trait UnitTestHelperTrait
     {
         return new TextExtractionConfiguration(
             true,
+            false,
             '/tmp',
+            [],
             [],
         );
     }

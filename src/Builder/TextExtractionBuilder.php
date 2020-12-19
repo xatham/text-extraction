@@ -1,7 +1,7 @@
 <?php
 
-/*
- * This file is part of the Symfony package.
+/**
+ * This file is part of the Xatham/text-extraction package.
  *
  * (c) Xatham <s.kirejewski@googlemail.com>
  *
@@ -33,13 +33,17 @@ final class TextExtractionBuilder
      */
     public function buildTextExtractor(array $configuration): TextExtractor
     {
+
+        // pagination currently not supported
+        $pagination = $configuration['pagination'] ?? false;
         $withOcr = $configuration['withOcr'] ?? false;
         $tempDir = $configuration['tempDir'] ?? sys_get_temp_dir();
-        $mimeTypeSettings = $configuration['mimeTypeSettings'] ?? null;
+        $mimeTypeSettings = $configuration['mimeTypeSettings'] ?? [];
         $validMimeTypes = $this->extractValidMimeTypes($configuration);
 
         $textExtractionConfiguration = new TextExtractionConfiguration(
             $withOcr,
+            $pagination,
             $tempDir,
             $mimeTypeSettings,
             $validMimeTypes

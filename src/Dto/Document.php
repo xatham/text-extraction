@@ -15,6 +15,8 @@ namespace Xatham\TextExtraction\Dto;
 
 class Document
 {
+    private string $mimeType;
+
     /**
      * @var string[]
      */
@@ -36,5 +38,16 @@ class Document
         $this->textItems = $textItems;
 
         return $this;
+    }
+
+    public function setMimeType(string $mimeType): Document
+    {
+        $this->mimeType = $mimeType;
+        return $this;
+    }
+
+    public function getMimeType(): string
+    {
+        return $this->mimeType;
     }
 }

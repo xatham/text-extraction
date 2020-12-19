@@ -36,11 +36,12 @@ final class ExtractionStrategyCsvTest extends TestCase
             ["This", "is" , "a", "text"],
             ["A", "second" , "test", "."],
         ];
-        $targetFileObject->fgetcsv(",", "\"", "\\")->will(function($args, $mock) use ($textData) {
+        $targetFileObject->fgetcsv(',', '"', '\\')->will(function($args, $mock) use ($textData) {
             $methodCalls = $mock->findProphecyMethodCalls(
                 'fgetcsv',
                 new ArgumentsWildcard($args)
             );
+            var_dump(2);
             return count($methodCalls) < 2 ? $textData[count($methodCalls)] : false;
         });
 
