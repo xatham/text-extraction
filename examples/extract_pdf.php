@@ -18,8 +18,8 @@ require dirname(__DIR__). '/vendor/autoload.php';
 
 $textExtractor = (new TextExtractionBuilder())->buildTextExtractor(
     [
-        'withOcr' => false,
-        'validMimeTypes' =>  ['application/pdf'],
+        'with_ocr' => false,
+        'valid_mime_types' =>  ['application/pdf'],
     ],
 );
 

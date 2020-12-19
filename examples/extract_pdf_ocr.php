@@ -19,9 +19,9 @@ require dirname(__DIR__). '/vendor/autoload.php';
 
 $textExtractor = (new TextExtractionBuilder())->buildTextExtractor(
     [
-        'withOcr' => true,
-        'validMimeTypes' =>  ['application/pdf'],
-        'tempDir' => '/tmp',
+        'with_ocr' => true,
+        'valid_mime_types' =>  ['application/pdf'],
+        'temp_dir' => '/tmp',
     ],
 );
 

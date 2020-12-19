@@ -33,12 +33,11 @@ final class TextExtractionBuilder
      */
     public function buildTextExtractor(array $configuration): TextExtractor
     {
-
         // pagination currently not supported
         $pagination = $configuration['pagination'] ?? false;
-        $withOcr = $configuration['withOcr'] ?? false;
-        $tempDir = $configuration['tempDir'] ?? sys_get_temp_dir();
-        $mimeTypeSettings = $configuration['mimeTypeSettings'] ?? [];
+        $withOcr = $configuration['with_ocr'] ?? false;
+        $tempDir = $configuration['temp_dir'] ?? sys_get_temp_dir();
+        $mimeTypeSettings = $configuration['mime_type_settings'] ?? [];
         $validMimeTypes = $this->extractValidMimeTypes($configuration);
 
         $textExtractionConfiguration = new TextExtractionConfiguration(
@@ -79,7 +78,7 @@ final class TextExtractionBuilder
      */
     private function extractValidMimeTypes(array $configuration): array
     {
-        $validMimeTypes = $configuration['validMimeTypes'] ?? null;
+        $validMimeTypes = $configuration['valid_mime_types'] ?? null;
         if ($validMimeTypes === null) {
             return [];
         }

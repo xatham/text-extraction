@@ -52,3 +52,7 @@ foreach ($texts as $text) {
 }
 
 ```
+
+## License
+
+text-extraction is licensed under [MIT](https://github.com/xatham/text-extraction/blob/main/LICENSE).
