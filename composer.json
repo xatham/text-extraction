@@ -7,6 +7,8 @@
             "email": "s.kirejewski@googlemail.com"
         }
     ],
+    "type": "library",
+    "license": "MIT",
     "require": {
         "php": ">=7.4",
         "ext-imagick": "*",
