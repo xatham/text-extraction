@@ -41,7 +41,6 @@ final class ExtractionStrategyCsvTest extends TestCase
                 'fgetcsv',
                 new ArgumentsWildcard($args)
             );
-            var_dump(2);
             return count($methodCalls) < 2 ? $textData[count($methodCalls)] : false;
         });
 
