@@ -18,7 +18,8 @@
         "smalot/pdfparser": "^0.17.1",
         "thiagoalessio/tesseract_ocr": "^2.9",
         "symfony/finder": "^5.2",
-        "league/flysystem": "^2.0"
+        "league/flysystem": "^2.0",
+        "phpoffice/phpspreadsheet": "^1.15"
     },
     "autoload": {
         "psr-4": {

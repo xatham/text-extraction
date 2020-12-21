@@ -27,7 +27,7 @@ class ExtractionStrategyOpenDocumentTest extends TestCase
     {
         $config = $this->getConfigurationDummy();
         $targetFileObject = $this->prophesize(SplFileObject::class);
-        $targetFileObject->getPath()->willReturn('test')->shouldBeCalledOnce();
+        $targetFileObject->getRealPath()->willReturn('test')->shouldBeCalledOnce();
 
         $section = new Section(0);
         $section->addText('Test string');

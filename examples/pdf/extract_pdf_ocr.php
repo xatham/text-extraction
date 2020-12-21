@@ -1,7 +1,7 @@
 <?php
 
-/**
- * This file is part of the xatham/text-extraction package.
+/*
+ * This file is part of the Xatham/text-extraction package.
  *
  * (c) Xatham <s.kirejewski@googlemail.com>
  *
@@ -13,17 +13,19 @@
 declare(strict_types=1);
 
 use Xatham\TextExtraction\Builder\TextExtractionBuilder;
+use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
 
-require dirname(__DIR__). '/vendor/autoload.php';
+require dirname(__DIR__) . '/../vendor/autoload.php';
 
 $textExtractor = (new TextExtractionBuilder())->buildTextExtractor(
     [
-        'with_ocr' => false,
+        'with_ocr' => true,
         'valid_mime_types' =>  ['application/pdf'],
+        'temp_dir' => '/tmp',
     ],
 );
 
-$target = dirname(__DIR__) . '/examples/sample.pdf';
+$target = dirname(__DIR__) . '/pdf/sample.pdf';
 $plainTextDocument = $textExtractor->extractByFilePath($target);
 if ($plainTextDocument === null) {
     exit('Could not extract any data');

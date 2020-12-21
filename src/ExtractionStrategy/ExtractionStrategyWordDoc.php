@@ -24,8 +24,7 @@ class ExtractionStrategyWordDoc implements ExtractionStrategyInterface
 {
     private const MIME_TYPE_PDF = 'application/msword';
 
-    /** @var MsDoc */
-    private $msDocParser;
+    private MsDoc $msDocParser;
 
     public function __construct(MsDoc $msDocParser)
     {

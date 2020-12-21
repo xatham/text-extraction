@@ -31,7 +31,7 @@ final class TextExtractionBuilder
     /**
      * @param array<string, mixed> $configuration
      */
-    public function buildTextExtractor(array $configuration): TextExtractor
+    public function buildTextExtractor(array $configuration = []): TextExtractor
     {
         // pagination currently not supported
         $pagination = $configuration['pagination'] ?? false;

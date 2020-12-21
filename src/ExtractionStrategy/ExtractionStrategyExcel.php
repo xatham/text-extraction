@@ -13,37 +13,38 @@ declare(strict_types=1);
 
 namespace Xatham\TextExtraction\ExtractionStrategy;
 
-use ErrorException;
-use SimpleXLSX;
 use SplFileObject;
 use Xatham\TextExtraction\Configuration\TextExtractionConfiguration;
-use Xatham\TextExtraction\Decorator\SimpleXLSXDecorator;
 use Xatham\TextExtraction\Dto\Document;
+use Xatham\TextExtraction\Factory\SpreadSheetFactory;
 
 class ExtractionStrategyExcel implements ExtractionStrategyInterface
 {
     private const MIME_TYPE_EXCEL = 'application/vnd.ms-excel';
 
-    private SimpleXLSXDecorator $simpleXLSX;
+    private SpreadSheetFactory $spreadSheetFactory;
 
-    public function __construct(SimpleXLSXDecorator $simpleXLSX)
+    public function __construct(SpreadSheetFactory $spreadSheetFactory)
     {
-        $this->simpleXLSX = $simpleXLSX;
+        $this->spreadSheetFactory = $spreadSheetFactory;
     }
 
     public function extractSource(SplFileObject $fileObject, TextExtractionConfiguration $textExtractionConfiguration): ?Document
     {
+        /** @var string $realPath */
+        $realPath = $fileObject->getRealPath();
+        $spreadSheet = $this->spreadSheetFactory->createSpreadSheet($realPath);
         $document = new Document();
-        $content = $this->simpleXLSX->parse($fileObject->getPath());
-        if (!$content instanceof SimpleXLSX) {
-            throw new ErrorException('Could not parse Excel file');
+        $workSheets = $spreadSheet->getAllSheets();
+        $contents = '';
+
+        foreach ($workSheets as $workSheet) {
+            $worksheetData = $workSheet->toArray();
+            foreach ($worksheetData as $key => $value) {
+                $contents .= implode(', ', array_filter($value));
+            }
         }
-        /** @var SimpleXLSX $content */
-        $rows = $content->rows();
-        if (count($rows) === 0) {
-            return $document;
-        }
-        $document->setTextItems($rows);
+        $document->setTextItems([$contents]);
 
         return $document;
     }

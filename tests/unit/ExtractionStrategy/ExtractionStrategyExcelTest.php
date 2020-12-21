@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Xatham\TextExtraction\Tests\unit\ExtractionStrategy;
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Prophecy\Argument;
 use Prophecy\PhpUnit\ProphecyTrait;
 use SplFileObject;
-use Xatham\TextExtraction\Decorator\SimpleXLSXDecorator;
 use Xatham\TextExtraction\Dto\Document;
 use Xatham\TextExtraction\ExtractionStrategy\ExtractionStrategyExcel;
 use PHPUnit\Framework\TestCase;
+use Xatham\TextExtraction\Factory\SpreadSheetFactory;
 use Xatham\TextExtraction\Tests\helper\UnitTestHelperTrait;
 
 class ExtractionStrategyExcelTest extends TestCase
@@ -25,22 +27,31 @@ class ExtractionStrategyExcelTest extends TestCase
         $config = $this->getConfigurationDummy();
 
         $targetFileObject = $this->prophesize(SplFileObject::class);
-        $targetFileObject->getPath()->willReturn('test')->shouldBeCalledOnce();
+        $targetFileObject->getRealPath()->willReturn('test')->shouldBeCalledOnce();
 
-        $simpleXLSXMock = $this->prophesize(\SimpleXLSX::class);
-        $simpleXLSXMock->rows()->willReturn(['Test string']);
+        $workSheetMock = $this->prophesize(Worksheet::class);
+        $workSheetMock->toArray()->willReturn(
+            [
+                ['Test', 'string'],
+            ],
+        );
+        $workSheetArrayMock = [
+            $workSheetMock->reveal(),
+        ];
+        $spreadSheetMock = $this->prophesize(Spreadsheet::class);
+        $spreadSheetMock->getAllSheets()->willReturn($workSheetArrayMock);
 
-        $excelAdapterMock = $this->prophesize(SimpleXLSXDecorator::class);
-        $excelAdapterMock->parse(Argument::any())->willReturn($simpleXLSXMock->reveal())->shouldBeCalledOnce();
+        $spreadSheetFactoryMock = $this->prophesize(SpreadSheetFactory::class);
+        $spreadSheetFactoryMock->createSpreadSheet(Argument::any())->willReturn($spreadSheetMock->reveal())->shouldBeCalledOnce();
 
         $expectedDocument = new Document();
         $expectedDocument->setTextItems(
             [
-                "Test string",
+                "Test, string",
             ]
         );
 
-        $textExtractor = new ExtractionStrategyExcel($excelAdapterMock->reveal());
+        $textExtractor = new ExtractionStrategyExcel($spreadSheetFactoryMock->reveal());
         self::assertEquals($expectedDocument, $textExtractor->extractSource($targetFileObject->reveal(), $config));
     }
 }

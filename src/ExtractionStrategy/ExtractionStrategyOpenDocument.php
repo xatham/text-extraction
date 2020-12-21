@@ -34,7 +34,8 @@ class ExtractionStrategyOpenDocument implements ExtractionStrategyInterface
 
     public function extractSource(SplFileObject $fileObject, TextExtractionConfiguration $textExtractionConfiguration): ?Document
     {
-        $filePath = $fileObject->getPath();
+        /** @var string $filePath */
+        $filePath = $fileObject->getRealPath();
         if (!$this->docParser->canRead($filePath)) {
             throw new InvalidArgumentException('Could not read ' . $filePath);
         }
